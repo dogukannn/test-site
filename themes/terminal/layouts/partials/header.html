@@ -1,0 +1,158 @@
+<header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      {{ partial "logo.html" . }}
+    </div>
+    {{ if len $.Site.Menus }}
+      {{ partial "mobile-menu.html" . }}
+    {{ end }}
+    {{ if and $.Site.Params.showLanguageSelector (len $.Site.Home.AllTranslations) }}
+      {{ partial "language-menu.html" . }}
+    {{ end }}
+  </div>
+  {{ if len $.Site.Menus }}
+    {{ partial "menu.html" . }}
+  {{ end }}
+
+</header>
+
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    fetchSearchIndex();
+
+    const input = document.getElementById('search-input');
+    const resultsContainer = document.getElementById('search-results');
+
+    // HTML escape function
+    function escapeHtml(unsafe) {
+        if (!unsafe) return '';
+        return unsafe
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+    }
+
+    // Escape special characters in string for use in regex
+    function escapeRegExp(string) {
+        return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    }
+
+    function highlightText(text, query) {
+        if (!text) return '';
+        
+        // First escape the HTML
+        let safeText = escapeHtml(text);
+        
+        // Get unique terms and sort by length (longest first)
+        const terms = [...new Set(query.toLowerCase().split(/\s+/))]
+            .filter(term => term.length > 0)
+            .sort((a, b) => b.length - a.length);
+        
+        // Create single regex for all terms to improve performance
+        if (terms.length > 0) {
+            const combinedPattern = terms.map(term => escapeRegExp(term)).join('|');
+            const regex = new RegExp(`(${combinedPattern})`, 'gi');
+            safeText = safeText.replace(regex, '<span class="highlight">$1</span>');
+        }
+        
+        return safeText;
+    }
+
+    function generatePreview(content, title, query, maxLength = 200) {
+        if (!content) return '';
+        
+        // Strip HTML tags and normalize whitespace
+        const strippedContent = content.replace(/<[^>]*>/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+        
+        const terms = [...new Set(query.toLowerCase().split(/\s+/))];
+        const contentLower = strippedContent.toLowerCase();
+        
+        let matchPos = -1;
+        
+        // Find the first match position
+        for (const term of terms) {
+            if (!term) continue;
+            const pos = contentLower.indexOf(term);
+            if (pos !== -1 && (matchPos === -1 || pos < matchPos)) {
+                matchPos = pos;
+            }
+        }
+
+        // If no match found, return the start of the content
+        if (matchPos === -1) {
+            return escapeHtml(strippedContent.slice(0, maxLength)) + '...';
+        }
+
+        // Calculate preview window
+        let start = Math.max(0, matchPos - 60);
+        let end = Math.min(strippedContent.length, matchPos + maxLength - 60);
+
+        // Adjust to word boundaries
+        if (start > 0) {
+            const spaceAfterStart = strippedContent.indexOf(' ', start);
+            start = spaceAfterStart > -1 ? spaceAfterStart + 1 : start;
+        }
+        if (end < strippedContent.length) {
+            const spaceBeforeEnd = strippedContent.lastIndexOf(' ', end);
+            end = spaceBeforeEnd > -1 ? spaceBeforeEnd : end;
+        }
+
+        let preview = strippedContent.slice(start, end);
+
+        // Add ellipsis if needed
+        if (start > 0) preview = '...' + preview;
+        if (end < strippedContent.length) preview = preview + '...';
+
+        return highlightText(preview, query);
+    }
+
+    // Debounce the search to improve performance
+    const debounce = (func, wait) => {
+        let timeout;
+        return function (...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+        };
+    };
+
+    const handleSearch = debounce(function(query) {
+        // Clear the results container if the input is empty
+        if (!query) {
+            resultsContainer.innerHTML = '';
+            return;
+        }
+
+        const results = search(query);
+
+        resultsContainer.innerHTML = '';
+        if (results.length === 0) {
+            resultsContainer.innerHTML = '<li>No results found</li>';
+            return;
+        }
+
+        const fragment = document.createDocumentFragment();
+        results.forEach(result => {
+            const li = document.createElement('li');
+            li.classList.add('search-result-item');
+            const highlightedTitle = highlightText(result.title, query);
+            const preview = generatePreview(result.content, result.title, query);
+            
+            li.innerHTML = `
+                <a href="${escapeHtml(result.href)}" class="title">${highlightedTitle}</a>
+                <div class="preview">${preview}</div>
+            `;
+            fragment.appendChild(li);
+        });
+        resultsContainer.appendChild(fragment);
+    }, 250);
+
+    input.addEventListener('input', function() {
+        handleSearch(this.value.trim());
+    });
+});
+</script>

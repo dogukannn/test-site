@@ -1,0 +1,23 @@
+{{- $pages := where .Site.Pages "Type" "not in" (slice "page" "section") -}}
+[
+{{- $first := true -}}
+{{- range $pages -}}
+    {{- $content := .Plain -}}
+    {{- if gt (len $content) 0 -}}
+        {{- if not $first }},{{ end -}}
+        {{- $first = false -}}
+        {
+            "href": "{{ .RelPermalink }}",
+            "title": {{ .Title | jsonify }},
+            "content": {{ $content | jsonify }},
+            "summary": {{ .Summary | plainify | jsonify }},
+            "date": "{{ .Date.Format "2006-01-02" }}",
+            "lastmod": "{{ .Lastmod.Format "2006-01-02" }}",
+            "type": "{{ .Type }}",
+            "section": "{{ .Section }}",
+            "tags": {{ .Params.tags | default slice | jsonify }},
+            "categories": {{ .Params.categories | default slice | jsonify }}
+        }
+    {{- end -}}
+{{- end -}}
+]

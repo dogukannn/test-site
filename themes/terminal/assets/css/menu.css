@@ -1,0 +1,231 @@
+.navigation-menu {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin: 20px 1px;
+}
+
+.navigation-menu__inner {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navigation-menu__inner > li {
+  flex: 0 0 auto;
+  margin-bottom: 10px;
+  white-space: nowrap;
+}
+
+.navigation-menu__inner > li:not(:last-of-type) {
+  margin-right: 20px;
+}
+
+.navigation-menu .spacer {
+  flex-grow: 1 !important;
+}
+
+.menu {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.menu__trigger {
+  margin-right: 0 !important;
+  color: var(--accent);
+  user-select: none;
+  cursor: pointer;
+}
+
+.menu__dropdown {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  background: var(--background);
+  box-shadow: 0 10px var(--background), -10px 10px var(--background), 10px 10px var(--background);
+  color: var(--accent);
+  border: 2px solid var(--accent);
+  margin: 0;
+  padding: 10px;
+  top: 10px;
+  left: 0;
+  list-style: none;
+  z-index: 99;
+}
+
+.open .menu__dropdown {
+  display: flex;
+}
+
+.menu__dropdown > li {
+  flex: 0 0 auto;
+}
+
+.menu__dropdown > li:not(:last-of-type) {
+  margin-bottom: 10px;
+}
+
+.menu__dropdown > li a {
+  display: flex;
+  padding: 5px;
+}
+
+.menu--mobile .menu__trigger {
+  color: var(--accent);
+  border: 2px solid;
+  margin-left: 10px;
+  height: 100%;
+  padding: 3px 8px;
+  margin-bottom: 0 !important;
+  position: relative;
+  cursor: pointer;
+  display: none;
+}
+
+.menu--mobile li {
+  flex: 0 0 auto;
+}
+
+.menu--mobile li:not(:last-of-type) {
+  margin-bottom: 10px;
+}
+
+.menu--language-selector .menu__trigger {
+  color: var(--accent);
+  border: 2px solid;
+  margin-left: 10px;
+  height: 100%;
+  padding: 3px 8px;
+  margin-bottom: 0 !important;
+  position: relative;
+  cursor: pointer;
+}
+
+.menu--language-selector .menu__dropdown {
+  left: auto;
+  right: 0;
+}
+
+@media (max-width: 684px) {
+  .navigation-menu {
+    margin: 0;
+  }
+
+  .navigation-menu__inner {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0;
+  }
+
+  .navigation-menu__inner li {
+    margin: 0;
+    padding: 5px;
+  }
+
+  .menu--desktop {
+    display: none;
+  }
+
+  .menu--mobile .menu__trigger {
+    display: block;
+  }
+
+  .menu--mobile .menu__dropdown {
+    left: auto;
+    right: 0;
+  }
+
+  .menu--language-selector .menu__trigger {
+    display: none;
+  }
+}
+
+
+.navigation-menu__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.search-list-item {
+  margin-left: auto;
+  position: relative;
+}
+
+.search-container {
+  width: 300px; /* Adjust width as needed */
+  padding: 10px;
+  box-sizing: border-box;
+  background-color: inherit;
+  position: relative;
+}
+
+#search-results {
+  max-height: 200px;
+  position: absolute;
+  top: calc(100% + 5px); /* Position below the search container */
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  border-radius: 4px;
+  background-color: inherit; /* Ensure this matches the theme background color */
+  padding: 10px;
+  overflow: hidden; /* Prevents scrollbar */
+  white-space: initial; /* Ensures word wrapping */
+  word-wrap: break-word; /* Ensures word wrapping */
+  text-align: left; /* Aligns text to the left */
+  margin: 0;
+
+  background-color: var(--background);
+
+  overflow-y: auto;
+  max-height: 200px;
+
+  scrollbar-color: var(--accent) var(--background);
+  scrollbar-width: thin;
+}
+
+.search-result-item {
+  text-align: left !important;
+  margin: 0;
+  overflow: hidden;
+  padding: 8px 0;
+  border-bottom: 2px dotted var(--border-color, rgba(125, 125, 125, 0.2));
+}
+
+.search-result-item:last-child {
+  border-bottom: none;
+}
+
+#search-results .title {
+  text-align: left !important; /* Ensures text aligns to the left */
+  display: block; /* Ensures it takes full width */
+  margin: 0 0 4px 0; /* Add bottom margin to separate title from preview */
+  padding: 5px; /* Remove padding around the title */
+  line-height: 1.2; /* Adjust line height */
+  font-weight: 500; /* Make title slightly bolder */
+}
+
+#search-results .preview {
+  margin: 0; /* Remove margin around the preview */
+  padding: 0; /* Remove padding around the preview */
+  max-height: 200px;
+  overflow: hidden;
+  display: block;
+  line-height: 1.2; /* Adjust line height */
+}
+
+.highlight {
+  background-color: var(--accent);
+  color: var(--background);
+  padding: 0 2px;
+  border-radius: 2px;
+}
