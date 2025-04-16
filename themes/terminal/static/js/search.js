@@ -3,7 +3,7 @@
   let searchIndex = null;
 
   function fetchSearchIndex() {
-    return fetch('/index.json')
+    return fetch('/test-site/index.json')
       .then(response => response.json())
       .then(indexData => {
         data = indexData;

@@ -9,9 +9,9 @@
   {{ end }}
   {{ partial "head.html" . }}
 
-    <script src="/js/lunr.min.js"></script>
-    <script src="/js/lunr-ngram.js"></script>
-    <script src="/js/search.js"></script>
+    <script src="/test-site/js/lunr.min.js"></script>
+    <script src="/test-site/js/lunr-ngram.js"></script>
+    <script src="/test-site/js/search.js"></script>
 </head>
 <body>
 {{ $container := cond ($.Site.Params.FullWidthTheme | default false) "container full" (cond ($.Site.Params.CenterTheme | default false) "container center" "container") }}
